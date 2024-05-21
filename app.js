@@ -47,4 +47,16 @@ app.post("/properties/add", (req, res) => {
     });
 });
 
+app.get("/properties/:id", async (req, res) => {
+  try {
+    const property = await Property.findById(req.params.id);
+    if (!property) {
+      return res.status(404).json({ message: "Property not found" });
+    }
+    res.json(property);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
 module.exports = app;
