@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const app = express();
 const bodyParser = require("body-parser");
 const dbConnect = require("./db/dbConnect");
@@ -9,6 +10,15 @@ dbConnect();
 // body parser configuration
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    methods: "GET,POST,DELETE",
+    optionsSuccessStatus: 200,
+  })
+);
+
+app.get("/", (req, res) => res.send("Express on Vercel"));
 
 app.get("/properties", async (req, res) => {
   try {
@@ -20,16 +30,8 @@ app.get("/properties", async (req, res) => {
 });
 
 app.post("/properties/add", (req, res) => {
-  const { name, location, type, bathrooms, bedrooms, price, description, images } = req.body;
   const property = new Property({
-    name,
-    location,
-    type,
-    bathrooms,
-    bedrooms,
-    price,
-    description,
-    images,
+    ...req.body,
   });
 
   property
